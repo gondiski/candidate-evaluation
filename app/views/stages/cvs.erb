@@ -1,0 +1,135 @@
+<h1>Stage 5: CVs</h1>
+
+<div class="card">
+  <h2>Prompt D</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_d.md.erb") %></pre>
+  </div>
+  
+  <% unless @evaluation.candidates.any? %>
+    <form method="POST" action="/stages/<%= @evaluation.id %>/cvs">
+      <%= csrf_tag %>
+      
+      <p><strong>Paste ALL CVs at once. Label each clearly.</strong></p>
+      
+      <div class="form-group">
+        <label for="cv_1">CANDIDATE 1:</label>
+        <textarea id="cv_1" name="cvs[CANDIDATE 1]" required placeholder="Paste CV text here..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="cv_2">CANDIDATE 2:</label>
+        <textarea id="cv_2" name="cvs[CANDIDATE 2]" placeholder="Paste CV text here..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="cv_3">CANDIDATE 3:</label>
+        <textarea id="cv_3" name="cvs[CANDIDATE 3]" placeholder="Paste CV text here..."></textarea>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Score All Candidates</button>
+    </form>
+  <% end %>
+</div>
+
+<% if @candidates.any? %>
+  <div class="card">
+    <h2>Candidates</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Label</th>
+          <th>Name</th>
+          <th>Weighted Score</th>
+          <th>Floor</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @candidates.each do |candidate| %>
+          <tr>
+            <td><%= h(candidate.label) %></td>
+            <td><%= h(candidate.name) %></td>
+            <td>
+              <span class="score-badge <%= candidate.weighted_score >= 7 ? 'high' : candidate.weighted_score >= 4 ? 'medium' : 'low' %>">
+                <%= "%.1f" % candidate.weighted_score %>
+              </span>
+            </td>
+            <td>
+              <span class="score-badge <%= candidate.floor_score >= 7 ? 'high' : candidate.floor_score >= 4 ? 'medium' : 'low' %>">
+                <%= "%.1f" % candidate.floor_score %>
+              </span>
+            </td>
+            <td>
+              <span class="stage-status <%= candidate.verdict == 'pass' ? 'completed' : 'failed' %>">
+                <%= candidate.verdict.upcase %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  
+  <% @candidates.each do |candidate| %>
+    <div class="card">
+      <h2><%= h(candidate.name) %> - Details</h2>
+      
+      <h3>Scores</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Driver</th>
+            <th>Score</th>
+            <th>Mark</th>
+            <th>Evidenced</th>
+            <th>Justification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% candidate.candidate_scores.each do |cs| %>
+            <tr>
+              <td><%= h(cs.driver.name) %></td>
+              <td>
+                <span class="score-badge <%= cs.score >= 7 ? 'high' : cs.score >= 4 ? 'medium' : 'low' %>">
+                  <%= cs.score %>
+                </span>
+              </td>
+              <td><%= cs.mark %></td>
+              <td><%= cs.evidenced ? "Yes" : "No" %></td>
+              <td><%= h(cs.justification) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      
+      <h3>Kills</h3>
+      <ul>
+        <% candidate.kills_list.each do |kill| %>
+          <li><%= h(kill) %></li>
+        <% end %>
+      </ul>
+      
+      <h3>Strengths</h3>
+      <ul>
+        <% candidate.strengths_list.each do |strength| %>
+          <li><%= h(strength) %></li>
+        <% end %>
+      </ul>
+      
+      <h3>Interview Questions</h3>
+      <% candidate.questions.each do |q| %>
+        <div style="margin-bottom: 0.5rem;">
+          <strong>Q:</strong> <%= h(q["question"]) %>
+          <br>
+          <em>Tests: <%= h(q["tests"]) %></em>
+        </div>
+      <% end %>
+      
+      <h3>Recommendation</h3>
+      <p><%= h(candidate.recommendation) %></p>
+    </div>
+  <% end %>
+<% end %>

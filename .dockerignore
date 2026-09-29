@@ -1,0 +1,42 @@
+.git
+.gitignore
+.env
+.env.example
+.env.local
+.env.*.local
+
+# Dependencies
+vendor/bundle
+.bundle
+
+# Test files
+spec/
+coverage/
+.rspec_examples.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+log/
+
+# Temp files
+tmp/*
+!tmp/.keep
+
+# Documentation
+README.md
+DECISIONS.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

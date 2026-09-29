@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Evaluation</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/htmx.org@1.9.8"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/" class="logo">Candidate Evaluation</a>
+      <ul>
+        <% if current_user %>
+          <li><a href="/evaluations">Evaluations</a></li>
+          <li><a href="/sessions/logout">Logout</a></li>
+        <% else %>
+          <li><a href="/sessions/login">Login</a></li>
+          <li><a href="/sessions/register">Register</a></li>
+        <% end %>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <% if flash[:notice] %>
+      <div class="flash notice"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:error] %>
+      <div class="flash error"><%= flash[:error] %></div>
+    <% end %>
+    <% if flash[:warning] %>
+      <div class="flash warning"><%= flash[:warning] %></div>
+    <% end %>
+
+    <%= yield %>
+  </main>
+
+  <footer>
+    <p>Candidate Evaluation Tool — Nine stages · Three stop gates · One document in two issues</p>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

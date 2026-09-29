@@ -1,0 +1,53 @@
+<h1>Corrections Panel</h1>
+
+<div class="card">
+  <h2>Six Failures That Look Like Work</h2>
+  <p>Catch them in the moment, not in the report.</p>
+</div>
+
+<% @corrections.each do |key, correction| %>
+  <div class="correction-card">
+    <h3><%= h(correction[:symptom]) %></h3>
+    <p><strong>What it means:</strong> <%= h(correction[:meaning]) %></p>
+    
+    <div class="action">
+      <strong>What to say:</strong>
+      <pre><%= h(correction[:action]) %></pre>
+    </div>
+    
+    <form method="POST" action="/corrections/<%= @evaluation.id %>/<%= key %>">
+      <%= csrf_tag %>
+      <button type="submit" class="btn btn-warning">Apply Correction</button>
+    </form>
+  </div>
+<% end %>
+
+<div class="card">
+  <h2>The Four Rules That Make The Whole Thing Work</h2>
+  
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+      <h3>Kill First, Score Second</h3>
+      <p>A candidate who fails a kill criterion is out before the scorecard opens. Score them anyway so the batch stays comparable — but a high score does not reopen a closed gate.</p>
+    </div>
+    
+    <div>
+      <h3>Two Numbers, Never One</h3>
+      <p>Weighted score ranks. Floor governs. A Floor of 3 or less caps the verdict at reject however high the weighted score. No averaging out of a hole.</p>
+    </div>
+    
+    <div>
+      <h3>Weights Before Candidates</h3>
+      <p>Ratified before the first CV is read. Never after, never provisionally. Closed to argument — but never closed to evidence that a weight is actually wrong.</p>
+    </div>
+    
+    <div>
+      <h3>One Document, Two Issues</h3>
+      <p>Pre-interview with the gate sheet blank. Post-interview with it filled. A question answered in conversation is a ? and stays a ? — the instrument must not round it up, and neither should you.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <a href="/evaluations/<%= @evaluation.id %>" class="btn btn-secondary">Back to Evaluation</a>
+</div>

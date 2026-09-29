@@ -1,0 +1,44 @@
+<h1>Evaluations</h1>
+
+<div style="margin-bottom: 1rem;">
+  <a href="/evaluations/new" class="btn btn-primary">New Evaluation</a>
+</div>
+
+<% if @evaluations.any? %>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Stage</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @evaluations.each do |evaluation| %>
+          <tr>
+            <td><a href="/evaluations/<%= evaluation.id %>"><%= h(evaluation.title) %></a></td>
+            <td>
+              <span class="stage-status <%= evaluation.stage %>">
+                <%= evaluation.stage.titleize %>
+              </span>
+            </td>
+            <td><%= evaluation.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td>
+              <a href="/evaluations/<%= evaluation.id %>" class="btn btn-secondary">View</a>
+              <form method="POST" action="/evaluations/<%= evaluation.id %>/purge" style="display: inline;">
+                <%= csrf_tag %>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('This will permanently delete all data. Continue?')">Purge</button>
+              </form>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="card">
+    <p>No evaluations yet. Create one to get started.</p>
+  </div>
+<% end %>

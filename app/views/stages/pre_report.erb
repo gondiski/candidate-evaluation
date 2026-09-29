@@ -1,0 +1,44 @@
+<h1>Stage 7: Pre-Interview Report</h1>
+
+<div class="card">
+  <h2>Prompt F</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_f.md.erb") %></pre>
+  </div>
+  
+  <% unless @report %>
+    <form method="POST" action="/stages/<%= @evaluation.id %>/pre_report">
+      <%= csrf_tag %>
+      <button type="submit" class="btn btn-primary">Generate Pre-Interview Report</button>
+    </form>
+  <% end %>
+</div>
+
+<% if @report %>
+  <div class="card">
+    <h2>Report Generated</h2>
+    
+    <p>Pre-interview report generated at: <%= @report.generated_at.strftime("%Y-%m-%d %H:%M") %></p>
+    
+    <div style="background: #dcfce7; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+      <p><strong>Gate sheet is blank</strong> — to be completed by hand in the interview room.</p>
+    </div>
+    
+    <h3>Report Contents</h3>
+    <ul>
+      <li>Page 1: Summary with comparative career timeline</li>
+      <li>Page 2: Consolidated evaluation with empty gate grid</li>
+      <% @evaluation.candidates.each do |candidate| %>
+        <li><%= h(candidate.name) %> - Assessment page</li>
+        <li><%= h(candidate.name) %> - Evidence page with timeline</li>
+      <% end %>
+      <li>Final page: Wrap-up</li>
+    </ul>
+    
+    <div style="margin-top: 1rem;">
+      <a href="/reports/<%= @evaluation.id %>/pre_interview.pdf" class="btn btn-primary">Download PDF</a>
+      <a href="/reports/<%= @evaluation.id %>/pre_interview.docx" class="btn btn-secondary">Download DOCX</a>
+    </div>
+  </div>
+<% end %>

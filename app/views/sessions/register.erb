@@ -1,0 +1,28 @@
+<h1>Register</h1>
+
+<div class="card">
+  <form method="POST" action="/sessions/register">
+    <%= csrf_tag %>
+    
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="8">
+    </div>
+    
+    <div class="form-group">
+      <label for="password_confirmation">Confirm Password</label>
+      <input type="password" id="password_confirmation" name="password_confirmation" required minlength="8">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+  
+  <p style="margin-top: 1rem;">
+    Already have an account? <a href="/sessions/login">Login</a>
+  </p>
+</div>

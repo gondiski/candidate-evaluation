@@ -1,0 +1,72 @@
+<h1>Stage 2: Job Description</h1>
+
+<div class="card">
+  <h2>Prompt A</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_a.md.erb") %></pre>
+  </div>
+  
+  <form method="POST" action="/stages/<%= @evaluation.id %>/job_description">
+    <%= csrf_tag %>
+    
+    <div class="form-group">
+      <label for="job_description">Paste the full job description:</label>
+      <textarea id="job_description" name="job_description" required placeholder="Paste the complete job description here..."><%= h(@evaluation.job_description) %></textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Process Job Description</button>
+  </form>
+</div>
+
+<% if @evaluation.kill_criteria.any? %>
+  <div class="card">
+    <h2>Kill Criteria (3-5 binary requirements)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @evaluation.kill_criteria.order(:position).each_with_index do |kc, i| %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= h(kc.name) %></td>
+            <td><%= h(kc.description) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<% if @evaluation.drivers.any? %>
+  <div class="card">
+    <h2>Drivers (8-12 attributes)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Measures</th>
+          <th>How Evidenced</th>
+          <th>Floor?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @evaluation.drivers.order(:position).each_with_index do |d, i| %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= h(d.name) %></td>
+            <td><%= h(d.measures) %></td>
+            <td><%= h(d.how_evidenced) %></td>
+            <td><%= d.is_floor ? "Yes" : "No" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

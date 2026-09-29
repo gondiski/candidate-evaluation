@@ -1,0 +1,92 @@
+<h1>Stage 3: Weights</h1>
+
+<div class="card">
+  <h2>Prompt B</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_b.md.erb") %></pre>
+  </div>
+  
+  <% unless @weight_version %>
+    <form method="POST" action="/stages/<%= @evaluation.id %>/weights">
+      <%= csrf_tag %>
+      <button type="submit" class="btn btn-primary">Propose Weights</button>
+    </form>
+  <% end %>
+</div>
+
+<% if @weight_version %>
+  <div class="card">
+    <h2>Proposed Weights</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Driver</th>
+          <th>Weight</th>
+          <th>Floor?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @drivers.each do |driver| %>
+          <tr>
+            <td><%= h(driver.name) %></td>
+            <td><%= @weight_version.weight_for_driver(driver.id) %></td>
+            <td><%= @weight_version.floor_driver_ids_list.include?(driver.id.to_s) ? "Yes" : "No" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><strong>Total</strong></td>
+          <td><strong><%= @weight_version.weights.values.sum %></strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    <h3>Floor Attributes</h3>
+    <ul>
+      <% @weight_version.floor_drivers.each do |driver| %>
+        <li><%= h(driver.name) %></li>
+      <% end %>
+    </ul>
+    
+    <h3>The Scale</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>nothing on the page</td></tr>
+        <tr><td>1-3</td><td>claimed but not evidenced</td></tr>
+        <tr><td>4-6</td><td>evidenced, but adjacent, junior, or dated</td></tr>
+        <tr><td>7-8</td><td>evidenced, current, at the level the job needs</td></tr>
+        <tr><td>9-10</td><td>evidenced, and above the level — would raise the bar of the team they join</td></tr>
+      </tbody>
+    </table>
+    
+    <h3>The Floor Rule</h3>
+    <p>Weighted score = the sum of score × weight, divided by 100. This ranks.</p>
+    <p>Floor = the lowest score among the Floor attributes. This governs.</p>
+    <p>A Floor of 3 or less caps the verdict at reject however high the weighted score.</p>
+    
+    <h3>Evidence Cap</h3>
+    <p>Anything asserted on a CV without a credit, a link, a named piece of work or a named client is capped at 3, whatever the claim says.</p>
+    
+    <% unless @evaluation.weights_settled? %>
+      <form method="POST" action="/stages/<%= @evaluation.id %>/weights/settle" style="margin-top: 1rem;">
+        <%= csrf_tag %>
+        <p><strong>Type SETTLED to confirm weights. They cannot be changed after this.</strong></p>
+        <button type="submit" class="btn btn-primary" onclick="return confirm('Once SETTLED, weights cannot be changed. Continue?')">SETTLED</button>
+      </form>
+    <% else %>
+      <div style="background: #dcfce7; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+        <p><strong>Weights are SETTLED.</strong> They are now read-only for this evaluation.</p>
+      </div>
+    <% end %>
+  </div>
+<% end %>

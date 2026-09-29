@@ -1,0 +1,198 @@
+<h1><%= h(@evaluation.title) %></h1>
+
+<div class="card">
+  <h2>Evaluation Progress</h2>
+  
+  <div class="progress-bar">
+    <div class="progress-bar-fill" style="width: <%= ((Evaluation::STAGES.index(@evaluation.stage) + 1).to_f / Evaluation::STAGES.length * 100).to_i %>%"></div>
+  </div>
+  <p class="progress-text">Stage: <%= @evaluation.stage.titleize %></p>
+  
+  <div id="loading-indicator" style="display: none;">
+    <p>Processing...</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Stages</h2>
+  
+  <ul class="stage-list">
+    <li>
+      <div>
+        <strong>1. Briefing</strong>
+        <p>Capability self-test and briefing acknowledgment</p>
+      </div>
+      <% if @evaluation.briefing_acknowledged? %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <a href="/stages/<%= @evaluation.id %>/briefing" class="btn btn-primary">Start</a>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>2. Job Description</strong>
+        <p>Extract kill criteria and drivers</p>
+      </div>
+      <% if @evaluation.stage == "job_description" || @evaluation.can_advance_to?("job_description") %>
+        <a href="/stages/<%= @evaluation.id %>/job_description" class="btn btn-primary">Start</a>
+      <% elsif @evaluation.stage != "briefing" %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>3. Weights</strong>
+        <p>Set scoring weights (STOP GATE)</p>
+      </div>
+      <% if @evaluation.stage == "weights" || @evaluation.can_advance_to?("weights") %>
+        <a href="/stages/<%= @evaluation.id %>/weights" class="btn btn-primary">Start</a>
+      <% elsif @evaluation.weights_settled? %>
+        <span class="stage-status completed">SETTLED</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>4. Human Gates</strong>
+        <p>Define human-validated kill factors</p>
+      </div>
+      <% if @evaluation.stage == "human_gates" || @evaluation.can_advance_to?("human_gates") %>
+        <a href="/stages/<%= @evaluation.id %>/human_gates" class="btn btn-primary">Start</a>
+      <% elsif HumanGate.where(evaluation_id: @evaluation.id).count > 0 %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>5. CVs</strong>
+        <p>Score all candidates</p>
+      </div>
+      <% if @evaluation.stage == "cvs" || @evaluation.can_advance_to?("cvs") %>
+        <a href="/stages/<%= @evaluation.id %>/cvs" class="btn btn-primary">Start</a>
+      <% elsif Candidate.where(evaluation_id: @evaluation.id).count > 0 %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>6. Verify Employers</strong>
+        <p>Research organizations (STOP GATE)</p>
+      </div>
+      <% if @evaluation.stage == "verification" || @evaluation.can_advance_to?("verification") %>
+        <% if @evaluation.web_search_available %>
+          <a href="/stages/<%= @evaluation.id %>/verification" class="btn btn-primary">Start</a>
+        <% else %>
+          <span class="stage-status failed">Web search unavailable</span>
+        <% end %>
+      <% elsif Employer.where(evaluation_id: @evaluation.id).count > 0 %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>7. Pre-Interview Report</strong>
+        <p>Generate report with blank gate sheet</p>
+      </div>
+      <% if @evaluation.stage == "pre_report" || @evaluation.can_advance_to?("pre_report") %>
+        <a href="/stages/<%= @evaluation.id %>/pre_report" class="btn btn-primary">Start</a>
+      <% elsif Report.where(evaluation_id: @evaluation.id, issue_type: "pre_interview").count > 0 %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>8. Diagnose the Pool</strong>
+        <p>Assess the advertisement</p>
+      </div>
+      <% if @evaluation.stage == "diagnosis" || @evaluation.can_advance_to?("diagnosis") %>
+        <a href="/stages/<%= @evaluation.id %>/diagnosis" class="btn btn-primary">Start</a>
+      <% elsif StageRun.where(evaluation_id: @evaluation.id, stage_number: 8).order(Sequel.desc(:created_at)).first&.completed? %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+    
+    <li>
+      <div>
+        <strong>9. Final Report</strong>
+        <p>Enter gate marks and generate post-interview report</p>
+      </div>
+      <% if @evaluation.stage == "final_report" || @evaluation.can_advance_to?("final_report") %>
+        <a href="/stages/<%= @evaluation.id %>/final_report" class="btn btn-primary">Start</a>
+      <% elsif Report.where(evaluation_id: @evaluation.id, issue_type: "post_interview").count > 0 %>
+        <span class="stage-status completed">Completed</span>
+      <% else %>
+        <span class="stage-status pending">Pending</span>
+      <% end %>
+    </li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Corrections</h2>
+  <p>If the LLM makes common mistakes, use the corrections panel.</p>
+  <a href="/corrections/<%= @evaluation.id %>" class="btn btn-secondary">View Corrections</a>
+</div>
+
+<div class="card">
+  <h2>Actions</h2>
+  <a href="/evaluations/<%= @evaluation.id %>/edit" class="btn btn-secondary">Edit Title</a>
+  <form method="POST" action="/evaluations/<%= @evaluation.id %>/purge" style="display: inline;">
+    <%= csrf_tag %>
+    <button type="submit" class="btn btn-danger" onclick="return confirm('This will permanently delete all data including CVs, candidates, scores, and reports. Continue?')">Purge Evaluation</button>
+  </form>
+</div>
+
+<% if @stage_runs.any? %>
+  <div class="card">
+    <h2>Stage History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Stage</th>
+          <th>Status</th>
+          <th>Started</th>
+          <th>Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @stage_runs.each do |run| %>
+          <tr>
+            <td>Stage <%= run.stage_number %></td>
+            <td>
+              <span class="stage-status <%= run.status %>">
+                <%= run.status.titleize %>
+              </span>
+            </td>
+            <td><%= run.started_at&.strftime("%Y-%m-%d %H:%M") %></td>
+            <td><%= run.completed_at&.strftime("%Y-%m-%d %H:%M") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<script>
+  // Start progress polling
+  startProgressPolling(<%= @evaluation.id %>);
+</script>

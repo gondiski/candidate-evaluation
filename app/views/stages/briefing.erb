@@ -1,0 +1,76 @@
+<h1>Stage 1: The Briefing</h1>
+
+<div class="card">
+  <h2>Capability Self-Test</h2>
+  
+  <% if @evaluation.briefing_acknowledged? %>
+    <p>Briefing acknowledged at: <%= @evaluation.briefing_acknowledged_at %></p>
+    
+    <% if @capability_test %>
+      <h3>Capability List</h3>
+      <ul>
+        <li>
+          <strong>a) Web search:</strong> 
+          <span class="<%= @capability_test["capabilities"]["web_search"] ? 'stage-status completed' : 'stage-status failed' %>">
+            <%= @capability_test["capabilities"]["web_search"] ? 'YES' : 'NO' %>
+          </span>
+          <% unless @capability_test["capabilities"]["web_search"] %>
+            <p style="color: var(--error);">Stage 6 (Verify Employers) cannot run without web search.</p>
+          <% end %>
+        </li>
+        <li>
+          <strong>b) Code execution:</strong>
+          <span class="<%= @capability_test["capabilities"]["code_execution"] ? 'stage-status completed' : 'stage-status failed' %>">
+            <%= @capability_test["capabilities"]["code_execution"] ? 'YES' : 'NO' %>
+          </span>
+        </li>
+        <li>
+          <strong>c) File output:</strong>
+          <span class="<%= @capability_test["capabilities"]["file_output"] ? 'stage-status completed' : 'stage-status failed' %>">
+            <%= @capability_test["capabilities"]["file_output"] ? 'YES' : 'NO' %>
+          </span>
+        </li>
+        <li>
+          <strong>d) Attachments:</strong>
+          <span class="<%= @capability_test["capabilities"]["attachments"] ? 'stage-status completed' : 'stage-status failed' %>">
+            <%= @capability_test["capabilities"]["attachments"] ? 'YES' : 'NO' %>
+          </span>
+        </li>
+        <li>
+          <strong>e) Long output:</strong>
+          <span class="<%= @capability_test["capabilities"]["long_output"] ? 'stage-status completed' : 'stage-status failed' %>">
+            <%= @capability_test["capabilities"]["long_output"] ? 'YES' : 'NO' %>
+          </span>
+        </li>
+      </ul>
+      
+      <% if @capability_test["affected_stages"]&.any? %>
+        <h3>Affected Stages</h3>
+        <ul>
+          <% @capability_test["affected_stages"].each do |stage| %>
+            <li>Stage <%= stage %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+    
+    <div style="margin-top: 1rem;">
+      <a href="/evaluations/<%= @evaluation.id %>" class="btn btn-primary">Continue to Evaluation</a>
+    </div>
+  <% else %>
+    <h3>Briefing Text</h3>
+    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem; max-height: 400px; overflow-y: auto;">
+      <pre><%= File.read("#{PROMPTS_DIR}/briefing.md.erb") %></pre>
+    </div>
+    
+    <form method="POST" action="/stages/<%= @evaluation.id %>/briefing">
+      <%= csrf_tag %>
+      
+      <p style="margin-bottom: 1rem;">
+        <strong>I have read and understood the briefing.</strong>
+      </p>
+      
+      <button type="submit" class="btn btn-primary">Acknowledge and Run Capability Test</button>
+    </form>
+  <% end %>
+</div>

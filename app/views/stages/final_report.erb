@@ -1,0 +1,61 @@
+<h1>Stage 9: Final Report</h1>
+
+<div class="card">
+  <h2>Prompt H</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_h.md.erb") %></pre>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Enter Gate Marks</h2>
+  
+  <p>Enter your marks from the interviews. Use exactly: YES, NO, ?, NOT_REACHED</p>
+  
+  <form method="POST" action="/stages/<%= @evaluation.id %>/final_report" class="gate-mark-form">
+    <%= csrf_tag %>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <% @human_gates.each do |gate| %>
+            <th><%= h(gate.name) %><br><small><%= h(gate.question) %></small></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @candidates.each do |candidate| %>
+          <tr>
+            <td><strong><%= h(candidate.name) %></strong></td>
+            <% @human_gates.each do |gate| %>
+              <td>
+                <select name="gate_marks[<%= candidate.id %>][<%= gate.id %>]">
+                  <option value="">-- Select --</option>
+                  <option value="YES" <%= @gate_marks[candidate.id][gate.id] == "YES" ? "selected" : "" %>>YES</option>
+                  <option value="NO" <%= @gate_marks[candidate.id][gate.id] == "NO" ? "selected" : "" %>>NO</option>
+                  <option value="?" <%= @gate_marks[candidate.id][gate.id] == "?" ? "selected" : "" %>>?</option>
+                  <option value="NOT_REACHED" <%= @gate_marks[candidate.id][gate.id] == "NOT_REACHED" ? "selected" : "" %>>NOT_REACHED</option>
+                </select>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+      <h3>Rules</h3>
+      <ul>
+        <li><strong>YES</strong> — gate cleared</li>
+        <li><strong>NO</strong> — gate failed — the candidacy ends on this line</li>
+        <li><strong>?</strong> — tested but not settled, or asked but not demonstrated. Still open.</li>
+        <li><strong>NOT_REACHED</strong> — the candidate had already ended on an earlier line; never assessed</li>
+      </ul>
+      <p style="margin-top: 0.5rem;"><strong>A ? is never converted to YES.</strong></p>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Generate Final Report</button>
+  </form>
+</div>

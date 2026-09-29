@@ -1,0 +1,16 @@
+<h1>Edit Evaluation</h1>
+
+<div class="card">
+  <form method="POST" action="/evaluations/<%= @evaluation.id %>">
+    <%= csrf_tag %>
+    <input type="hidden" name="_method" value="PUT">
+    
+    <div class="form-group">
+      <label for="title">Evaluation Title</label>
+      <input type="text" id="title" name="title" value="<%= h(@evaluation.title) %>" required>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a href="/evaluations/<%= @evaluation.id %>" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>

@@ -1,0 +1,47 @@
+<h1>Stage 4: Human Gates</h1>
+
+<div class="card">
+  <h2>Prompt C</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_c.md.erb") %></pre>
+  </div>
+  
+  <% unless @evaluation.human_gates.any? %>
+    <form method="POST" action="/stages/<%= @evaluation.id %>/human_gates">
+      <%= csrf_tag %>
+      <button type="submit" class="btn btn-primary">Define Human Gates</button>
+    </form>
+  <% end %>
+</div>
+
+<% if @human_gates.any? %>
+  <div class="card">
+    <h2>Human-Validated Kill Factors</h2>
+    
+    <p>These are kill factors, they are not scored, and no weighted score outranks them.</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Factor</th>
+          <th>Question</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @human_gates.each_with_index do |gate, i| %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= h(gate.name) %></td>
+            <td><%= h(gate.question) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <div style="background: #fef3c7; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+      <p><strong>Important:</strong> These factors cannot be assessed from a CV. They will appear as empty PASS/FAIL boxes on page 2 of the report, to be completed in the interview.</p>
+    </div>
+  </div>
+<% end %>

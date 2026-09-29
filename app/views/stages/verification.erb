@@ -1,0 +1,129 @@
+<h1>Stage 6: Verify Employers</h1>
+
+<div class="card">
+  <h2>Prompt E</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_e.md.erb") %></pre>
+  </div>
+  
+  <% unless @evaluation.employers.any? %>
+    <% if @evaluation.web_search_available %>
+      <form method="POST" action="/stages/<%= @evaluation.id %>/verification">
+        <%= csrf_tag %>
+        <button type="submit" class="btn btn-primary">Verify Employers</button>
+      </form>
+    <% else %>
+      <div style="background: #fee2e2; padding: 1rem; border-radius: 4px;">
+        <p><strong>Web search is not available.</strong> This stage cannot run.</p>
+        <p>Reason: The capability test in Stage 1 did not detect web search capability.</p>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<% if @employers.any? %>
+  <div class="card">
+    <h2>Employer Research</h2>
+    
+    <% @employers.each do |employer| %>
+      <div class="employer-card">
+        <h3><%= h(employer.name) %></h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <p><strong>Legal Name:</strong> <%= h(employer.legal_name) %></p>
+            <p><strong>Trading Name:</strong> <%= h(employer.trading_name) %></p>
+            <p><strong>Function:</strong> <%= h(employer.function) %></p>
+            <p><strong>Status:</strong> <%= h(employer.status) %></p>
+          </div>
+          
+          <div>
+            <p><strong>Footprint:</strong> 
+              <span class="footprint"><%= employer.footprint %></span>/10
+              <% if employer.researched? %>
+                <em>(<%= employer.footprint_description %>)</em>
+              <% else %>
+                <em>(not researched)</em>
+              <% end %>
+            </p>
+            <p><strong>Turnover:</strong> <%= h(employer.turnover) %> (<%= h(employer.turnover_source) %>)</p>
+            <p><strong>Headcount:</strong> <%= h(employer.headcount) %></p>
+            <p><strong>Claim to Fame:</strong> <%= h(employer.claim_to_fame) %></p>
+          </div>
+        </div>
+        
+        <% if employer.researched? %>
+          <h4>Sources</h4>
+          <ul>
+            <% employer.employer_sources.each do |source| %>
+              <li><a href="<%= h(source.url) %>" target="_blank"><%= h(source.url) %></a></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  
+  <% if @evaluation.claims.any? %>
+    <div class="card">
+      <h2>Claims Classification</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Employer</th>
+            <th>Candidate</th>
+            <th>CV Claim</th>
+            <th>Classification</th>
+            <th>Search Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @evaluation.claims.each do |claim| %>
+            <tr>
+              <td><%= h(claim.employer.name) %></td>
+              <td><%= h(claim.candidate.name) %></td>
+              <td><%= h(claim.cv_claim) %></td>
+              <td>
+                <span class="claim-status <%= claim.classification.downcase.gsub('_', '-') %>">
+                  <%= claim.classification %>
+                </span>
+              </td>
+              <td><%= h(claim.search_description) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+  
+  <% if @evaluation.score_movements.any? %>
+    <div class="card">
+      <h2>Score Movements</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Candidate</th>
+            <th>Driver</th>
+            <th>Old Score</th>
+            <th>New Score</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @evaluation.score_movements.each do |movement| %>
+            <tr>
+              <td><%= h(movement.candidate.name) %></td>
+              <td><%= h(movement.driver.name) %></td>
+              <td><%= movement.old_score %></td>
+              <td><%= movement.new_score %></td>
+              <td><%= h(movement.reason) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>

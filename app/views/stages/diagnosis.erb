@@ -1,0 +1,37 @@
+<h1>Stage 8: Diagnose the Pool</h1>
+
+<div class="card">
+  <h2>Prompt G</h2>
+  
+  <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+    <pre><%= File.read("#{PROMPTS_DIR}/prompt_g.md.erb") %></pre>
+  </div>
+  
+  <% unless @stage_run&.completed? %>
+    <form method="POST" action="/stages/<%= @evaluation.id %>/diagnosis">
+      <%= csrf_tag %>
+      <button type="submit" class="btn btn-primary">Run Diagnosis</button>
+    </form>
+  <% end %>
+</div>
+
+<% if @stage_run&.completed? %>
+  <div class="card">
+    <h2>Pool Diagnosis</h2>
+    
+    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+      <% if @stage_run.raw_response %>
+        <% response = JSON.parse(@stage_run.raw_response) %>
+        <% if response.is_a?(Hash) && response["content"] %>
+          <pre><%= h(response["content"]) %></pre>
+        <% else %>
+          <pre><%= h(response.to_s) %></pre>
+        <% end %>
+      <% end %>
+    </div>
+    
+    <div style="background: #fef3c7; padding: 1rem; border-radius: 4px;">
+      <p><strong>Next Step:</strong> Print page 2 of the pre-interview report and take it into the interviews. Mark it by hand. Then come back for Stage 9.</p>
+    </div>
+  </div>
+<% end %>

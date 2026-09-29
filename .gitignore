@@ -1,0 +1,44 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+vendor/bundle
+.bundle
+
+# Test coverage
+coverage/
+.rspec_examples.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+log/
+
+# Temp files
+tmp/*
+!tmp/.keep
+
+# Node modules
+node_modules/
+
+# Yarn
+yarn-error.log
+yarn-debug.log
+
+# Puma
+tmp/pids/*
+
+# Reports generated
+tmp/reports/*
