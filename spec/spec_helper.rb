@@ -43,6 +43,9 @@ Capybara.app = Rack::Builder.new do
   map "/corrections" do
     run CorrectionsController
   end
+  map "/subscriptions" do
+    run SubscriptionsController
+  end
 end
 
 RSpec.configure do |config|

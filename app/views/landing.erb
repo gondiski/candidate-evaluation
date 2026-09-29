@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRMLA — Agentic Resume Filter & Candidate Evaluation</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="landing-nav">
+    <div class="container">
+      <a href="/" class="logo">HRMLA</a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <% if current_user %>
+          <li><a href="/evaluations" class="btn btn-primary">Dashboard</a></li>
+        <% else %>
+          <li><a href="/sessions/login" class="btn btn-secondary">Login</a></li>
+          <li><a href="/sessions/register" class="btn btn-primary">Get Started</a></li>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Stop Guessing.<br><span class="highlight">Start Hiring Right.</span></h1>
+        <p class="hero-subtitle">HRMLA is an agentic AI that filters resumes, scores candidates against your actual job requirements, and produces evidence-based evaluation reports — so you hire on data, not gut feel.</p>
+        <div class="hero-cta">
+          <a href="/sessions/register" class="btn btn-primary btn-lg">Start Free Trial</a>
+          <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">9</span>
+            <span class="stat-label">Evaluation Stages</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">3</span>
+            <span class="stat-label">Stop Gates</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">2</span>
+            <span class="stat-label">Report Issues</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-card">
+          <div class="card-header">
+            <span class="card-badge">Candidate Evaluation</span>
+            <span class="card-status">In Progress</span>
+          </div>
+          <div class="card-content">
+            <div class="candidate-row">
+              <span class="candidate-name">Alice Johnson</span>
+              <span class="candidate-score high">8.2</span>
+            </div>
+            <div class="candidate-row">
+              <span class="candidate-name">Bob Smith</span>
+              <span class="candidate-score medium">6.5</span>
+            </div>
+            <div class="candidate-row">
+              <span class="candidate-name">Carol Davis</span>
+              <span class="candidate-score low">3.1</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <span class="card-note">Weighted Score + Floor Rule</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">Built for Rigorous Hiring</h2>
+      <p class="section-subtitle">HRMLA enforces the rules that prevent bad hires — kill criteria first, two numbers per candidate, weights locked before CVs are read.</p>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Kill Criteria First</h3>
+          <p>Binary yes/no requirements applied before any scoring. A candidate who fails a kill criterion is out — no exceptions, no overrides.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">⚖️</div>
+          <h3>Two Numbers, Never One</h3>
+          <p>Weighted score ranks candidates. Floor score governs. A Floor of 3 or less forces reject — no averaging out of a hole.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Weights Before Candidates</h3>
+          <p>Scoring weights are ratified before the first CV is read. Closed to argument — but never closed to evidence.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Evidence-Based Scoring</h3>
+          <p>Every score is marked V (evidenced) or I (inference). Non-evidenced claims are capped at 3. No exceptions.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🏢</div>
+          <h3>Employer Verification</h3>
+          <p>AI researches every organization on every CV with live web search. URLs from actual retrieval, not model hallucination.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>Two-Issue Report</h3>
+          <p>Pre-interview report with blank gate sheet. Post-interview report with your marks. One document, two purposes.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🚫</div>
+          <h3>Anti-Flattery Engine</h3>
+          <p>Output linter catches praise, flattery, "verified" without URLs, and "fabricated" for unfound claims. Honest by design.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h3>Timeline Analysis</h3>
+          <p>Automatic tenure line computation with concurrent role detection, gap analysis, and mid-year assumption flags.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <h2 class="section-title">Nine Stages. Three Stop Gates.</h2>
+      <p class="section-subtitle">A structured pipeline that enforces rigor at every step.</p>
+      
+      <div class="stages-timeline">
+        <div class="stage">
+          <div class="stage-number">1</div>
+          <div class="stage-content">
+            <h3>Briefing</h3>
+            <p>Capability self-test and AI behavior rules</p>
+            <span class="stage-gate">STOP GATE</span>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">2</div>
+          <div class="stage-content">
+            <h3>Job Description</h3>
+            <p>Extract kill criteria and drivers</p>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">3</div>
+          <div class="stage-content">
+            <h3>Weights</h3>
+            <p>Set scoring weights summing to 100</p>
+            <span class="stage-gate">STOP GATE</span>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">4</div>
+          <div class="stage-content">
+            <h3>Human Gates</h3>
+            <p>Define interview-only kill factors</p>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">5</div>
+          <div class="stage-content">
+            <h3>CVs</h3>
+            <p>Score all candidates with evidence cap</p>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">6</div>
+          <div class="stage-content">
+            <h3>Verify Employers</h3>
+            <p>Research organizations with live web search</p>
+            <span class="stage-gate">STOP GATE</span>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">7</div>
+          <div class="stage-content">
+            <h3>Pre-Interview Report</h3>
+            <p>Generate report with blank gate sheet</p>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">8</div>
+          <div class="stage-content">
+            <h3>Diagnose Pool</h3>
+            <p>Assess if the ad recruited the right discipline</p>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-number">9</div>
+          <div class="stage-content">
+            <h3>Final Report</h3>
+            <p>Enter gate marks, generate post-interview issue</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="pricing">
+    <div class="container">
+      <h2 class="section-title">Simple, Transparent Pricing</h2>
+      <p class="section-subtitle">Start free. Upgrade when you need more evaluations.</p>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Starter</h3>
+            <div class="pricing-amount">
+              <span class="currency">$</span>
+              <span class="price">0</span>
+              <span class="period">/month</span>
+            </div>
+            <p class="pricing-description">For trying out HRMLA</p>
+          </div>
+          <div class="pricing-features">
+            <ul>
+              <li>✓ 2 evaluations per month</li>
+              <li>✓ Up to 3 candidates per evaluation</li>
+              <li>✓ Basic scoring and reports</li>
+              <li>✓ PDF export</li>
+              <li class="disabled">✗ Employer verification</li>
+              <li class="disabled">✗ DOCX export</li>
+              <li class="disabled">✗ Priority support</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="/sessions/register" class="btn btn-secondary btn-full">Get Started Free</a>
+          </div>
+        </div>
+        
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-header">
+            <h3>Professional</h3>
+            <div class="pricing-amount">
+              <span class="currency">$</span>
+              <span class="price">49</span>
+              <span class="period">/month</span>
+            </div>
+            <p class="pricing-description">For active hiring teams</p>
+          </div>
+          <div class="pricing-features">
+            <ul>
+              <li>✓ 10 evaluations per month</li>
+              <li>✓ Up to 10 candidates per evaluation</li>
+              <li>✓ Full scoring with Floor rule</li>
+              <li>✓ PDF + DOCX export</li>
+              <li>✓ Employer verification</li>
+              <li>✓ Corrections panel</li>
+              <li class="disabled">✗ Priority support</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="/subscriptions/new?plan=professional" class="btn btn-primary btn-full">Subscribe Now</a>
+          </div>
+        </div>
+        
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3>Enterprise</h3>
+            <div class="pricing-amount">
+              <span class="currency">$</span>
+              <span class="price">149</span>
+              <span class="period">/month</span>
+            </div>
+            <p class="pricing-description">For high-volume hiring</p>
+          </div>
+          <div class="pricing-features">
+            <ul>
+              <li>✓ Unlimited evaluations</li>
+              <li>✓ Unlimited candidates</li>
+              <li>✓ All Professional features</li>
+              <li>✓ Priority support</li>
+              <li>✓ Custom integrations</li>
+              <li>✓ Team collaboration</li>
+              <li>✓ Dedicated account manager</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="/subscriptions/new?plan=enterprise" class="btn btn-secondary btn-full">Contact Sales</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Ready to Hire with Evidence?</h2>
+      <p>Stop relying on gut feel. Start making data-driven hiring decisions.</p>
+      <a href="/sessions/register" class="btn btn-primary btn-lg">Start Your Free Trial</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo">HRMLA</span>
+          <p>Agentic resume filtering and candidate evaluation. Built for rigorous hiring.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 HRMLA. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/landing.js"></script>
+</body>
+</html>

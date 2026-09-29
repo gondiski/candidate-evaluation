@@ -1,0 +1,192 @@
+<h1>Subscription Management</h1>
+
+<div class="card">
+  <h2>Current Plan</h2>
+  
+  <% if @subscription && @subscription.active? %>
+    <div class="subscription-status">
+      <div class="plan-info">
+        <h3><%= @plan.name.capitalize %> Plan</h3>
+        <p class="plan-price"><%= @plan.price_formatted %></p>
+        <p class="plan-period">
+          Renews on <%= @subscription.current_period_end.strftime("%B %d, %Y") %>
+        </p>
+      </div>
+      
+      <div class="plan-features">
+        <h4>Features</h4>
+        <ul>
+          <% @plan.features.each do |feature| %>
+            <li>✓ <%= feature %></li>
+          <% end %>
+        </ul>
+      </div>
+      
+      <div class="plan-usage">
+        <h4>Usage This Month</h4>
+        <p>
+          <%= @subscription.evaluations_remaining %> evaluations remaining
+        </p>
+      </div>
+      
+      <div class="plan-actions">
+        <form method="POST" action="/subscriptions/cancel" style="display: inline;">
+          <%= csrf_tag %>
+          <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel? You can continue using your plan until the end of the billing period.')">
+            Cancel Subscription
+          </button>
+        </form>
+      </div>
+    </div>
+  <% else %>
+    <div class="no-subscription">
+      <p>You are currently on the <strong>Free</strong> plan.</p>
+      <a href="/subscriptions/new" class="btn btn-primary">Upgrade Now</a>
+    </div>
+  <% end %>
+</div>
+
+<% if @subscription && @subscription.active? %>
+  <div class="card">
+    <h2>Change Plan</h2>
+    
+    <div class="plans-grid">
+      <% @plans.each do |plan| %>
+        <div class="plan-card <%= 'current' if @plan&.id == plan.id %>">
+          <h3><%= plan.name.capitalize %></h3>
+          <p class="plan-price"><%= plan.price_formatted %></p>
+          
+          <ul class="plan-features">
+            <% plan.features.each do |feature| %>
+              <li>✓ <%= feature %></li>
+            <% end %>
+          </ul>
+          
+          <% if @plan&.id == plan.id %>
+            <button class="btn btn-secondary" disabled>Current Plan</button>
+          <% else %>
+            <form method="POST" action="/subscriptions/update">
+              <%= csrf_tag %>
+              <input type="hidden" name="plan_id" value="<%= plan.id %>">
+              <button type="submit" class="btn btn-primary">
+                Switch to <%= plan.name.capitalize %>
+              </button>
+            </form>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="card">
+  <h2>Payment History</h2>
+  
+  <% if @payments.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @payments.each do |payment| %>
+          <tr>
+            <td><%= payment.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td><%= payment.amount_formatted %></td>
+            <td>
+              <span class="status-badge <%= payment.status %>">
+                <%= payment.status.capitalize %>
+              </span>
+            </td>
+            <td><%= payment.payment_method || "N/A" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No payment history.</p>
+  <% end %>
+</div>
+
+<style>
+  .subscription-status {
+    display: grid;
+    gap: 2rem;
+  }
+  
+  .plan-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .plan-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  
+  .plan-period {
+    color: var(--gray-500);
+  }
+  
+  .plan-features ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .plan-features li {
+    padding: 0.25rem 0;
+  }
+  
+  .plan-usage {
+    background: var(--bg-dark);
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .plan-card {
+    border: 2px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .plan-card.current {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.05);
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .status-badge.completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+  }
+  
+  .status-badge.pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+  }
+  
+  .status-badge.failed {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+</style>

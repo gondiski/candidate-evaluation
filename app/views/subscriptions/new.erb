@@ -1,0 +1,197 @@
+<h1>Choose Your Plan</h1>
+
+<div class="pricing-section">
+  <p class="pricing-description">Select the plan that best fits your hiring needs.</p>
+  
+  <div class="pricing-grid">
+    <% @plans.each do |plan| %>
+      <div class="pricing-card <%= 'featured' if plan.name == 'professional' %> <%= 'selected' if @selected_plan&.id == plan.id %>">
+        <% if plan.name == 'professional' %>
+          <div class="pricing-badge">Most Popular</div>
+        <% end %>
+        
+        <div class="pricing-header">
+          <h3><%= plan.name.capitalize %></h3>
+          <div class="pricing-amount">
+            <span class="currency">$</span>
+            <span class="price"><%= plan.price.to_i %></span>
+            <span class="period">/month</span>
+          </div>
+          <p class="pricing-description"><%= plan.name.capitalize %> plan description</p>
+        </div>
+        
+        <div class="pricing-features">
+          <ul>
+            <% plan.features.each do |feature| %>
+              <li>✓ <%= feature %></li>
+            <% end %>
+          </ul>
+        </div>
+        
+        <div class="pricing-cta">
+          <form method="POST" action="/subscriptions/create">
+            <%= csrf_tag %>
+            <input type="hidden" name="plan_id" value="<%= plan.id %>">
+            <button type="submit" class="btn <%= plan.name == 'professional' ? 'btn-primary' : 'btn-secondary' %> btn-full">
+              <% if plan.free? %>
+                Get Started Free
+              <% else %>
+                Subscribe Now
+              <% end %>
+            </button>
+          </form>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="payment-info">
+  <h3>Secure Payment with Pesapal</h3>
+  <p>Your payment is processed securely through Pesapal. We support:</p>
+  <ul>
+    <li>Credit/Debit Cards</li>
+    <li>Mobile Money (M-Pesa, Airtel Money)</li>
+    <li>Bank Transfers</li>
+  </ul>
+</div>
+
+<style>
+  .pricing-section {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .pricing-description {
+    text-align: center;
+    color: var(--gray-500);
+    margin-bottom: 2rem;
+  }
+  
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .pricing-card {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 1rem;
+    padding: 2rem;
+    position: relative;
+    transition: all 0.2s;
+  }
+  
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pricing-card.featured {
+    border-color: var(--primary);
+    box-shadow: 0 12px 24px rgba(99, 102, 241, 0.2);
+  }
+  
+  .pricing-card.selected {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.05);
+  }
+  
+  .pricing-badge {
+    position: absolute;
+    top: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.25rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  
+  .pricing-header {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  
+  .pricing-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .pricing-amount {
+    margin-bottom: 0.5rem;
+  }
+  
+  .currency {
+    font-size: 1.5rem;
+    font-weight: 600;
+    vertical-align: top;
+  }
+  
+  .price {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .period {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+  
+  .pricing-features {
+    margin-bottom: 2rem;
+  }
+  
+  .pricing-features ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .pricing-features li {
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+  }
+  
+  .pricing-cta {
+    text-align: center;
+  }
+  
+  .payment-info {
+    background: var(--bg-dark);
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+  
+  .payment-info h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .payment-info ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .payment-info ul {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>

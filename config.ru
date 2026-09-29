@@ -6,5 +6,6 @@ run Rack::URLMap.new(
   "/sessions" => SessionsController,
   "/evaluations" => EvaluationsController,
   "/stages" => StagesController,
-  "/corrections" => CorrectionsController
+  "/corrections" => CorrectionsController,
+  "/subscriptions" => SubscriptionsController
 )

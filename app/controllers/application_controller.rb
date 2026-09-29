@@ -57,10 +57,6 @@ class ApplicationController < Sinatra::Base
   end
 
   get "/" do
-    if current_user
-      redirect "/evaluations"
-    else
-      redirect "/sessions/login"
-    end
+    erb :landing
   end
 end
